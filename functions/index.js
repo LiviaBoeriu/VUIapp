@@ -13,8 +13,8 @@ const app = dialogflow({
     debug: true,
   });
 
-app.intent('Default Welcome Response', (conv) => {
-    conv.ask('Hello');
+app.intent('Default Welcome Intent', (conv) => {
+  conv.ask("Hello");
 });
 
 app.intent('deepLink', (conv) => {
