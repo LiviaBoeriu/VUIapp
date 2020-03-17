@@ -21,6 +21,8 @@ app.intent('deepLink', (conv) => {
   conv.ask("Good morning");
 });
 
-
+app.intent('Stuff', (conv) => {
+  conv.ask("Stuffers");
+});
 // Set the DialogflowApp object to handle the HTTPS POST request.
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest(app);
