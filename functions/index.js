@@ -1,6 +1,5 @@
 'use strict';
 
-
 // Import the Dialogflow module and response creation dependencies
 // from the Actions on Google client library.
 const {
@@ -13,6 +12,11 @@ const {
 // Import the firebase-functions package for deployment.
 const functions = require('firebase-functions');
 
+const admin = require('firebase-admin');
+admin.initializeApp();
+const auth = admin.auth();
+const db = admin.firestore();
+
 // Instantiate the Dialogflow client.
 const app = dialogflow({
     clientId: '856112694993-r4l2v1ormrhf87mfont5fr3r41vvdoji.apps.googleusercontent.com',
@@ -23,9 +27,6 @@ app.intent('deepLink', (conv) => {
   conv.ask("Good morning");
 });
 
-app.intent('Stuff', (conv) => {
-  conv.ask("Stuffers");
-});
 
 //start sign in
 app.intent("Start Signin", conv => {
