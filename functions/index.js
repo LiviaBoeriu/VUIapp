@@ -13,16 +13,25 @@ const app = dialogflow({
     debug: true,
   });
 
-app.intent('Default Welcome Intent', (conv) => {
-  conv.ask("Hello");
+app.intent('Game', (conv) => {
+  conv.ask("Ok, lets play two truths one lie game. Haha, kidding, you are going to do most of the work. Each of you think of of three statements out of which one is wrong. Then say correct or incorrect when the other person tries to guess.");
 });
 
-app.intent('deepLink', (conv) => {
-  conv.ask("Good morning");
+app.intent('FirstStatement', (conv) => {
+
 });
 
-app.intent('Stuff', (conv) => {
-  conv.ask("Stuffers");
+app.intent('Correct', (conv) => {
+  conv.ask('Yey, that was a good one! Would you like to play another round?');
 });
+
+app.intent('Incorrect', (conv) => {
+  conv.ask('Awww, not this time around. Would you like to try again?');
+});
+
+app.intent('Correct try again', (conv) => {
+  conv.followup('tryagain');
+});
+  
 // Set the DialogflowApp object to handle the HTTPS POST request.
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest(app)
