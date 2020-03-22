@@ -36,8 +36,8 @@ app.intent('The Answer Is', (conv) => {
   conv.followup(`what-do-you-think`);
 });
 
-app.intent('Which is correct', (conv) => {
-  conv.ask('Is that the correct one?');
+app.intent('Is that the answer', (conv) => {
+  conv.ask('Is that the correct answer?');
 });
 
 app.intent('Correct', (conv) => {
@@ -45,7 +45,7 @@ app.intent('Correct', (conv) => {
 });
 
 app.intent('Incorrect', (conv) => {
-  conv.ask('Awww, not this time around. Would you like to try again?');
+  conv.ask('Oh no! That was not it! Do you want to play another round?');
 });
 
 app.intent('Try again', (conv) => {
@@ -56,10 +56,18 @@ app.intent('End Game', (conv) => {
   conv.ask('Ok, no problem! Let me know if you want to try the conversation mode by sayind: conversation, or if you want to quit.')
 });
 
-app.intent('Test try again', (conv) => {
+app.intent('Try again scope', (conv) => {
   conv.followup(`tryagain`);
 });
-  
+
+app.intent('Incorrect try again', (conv) => {
+  conv.followup(`get-statements`);
+});
+ 
+app.intent('Incorrect end game', (conv) => {
+  conv.ask('Ok, no problem! Let me know if you want to try the conversation mode by saying: conversation, or if you want to quit.')
+});
+
 app.intent('deepLink', (conv) => {
   conv.ask("Good morning");
 });
