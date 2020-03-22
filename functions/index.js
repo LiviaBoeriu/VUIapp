@@ -11,7 +11,11 @@ const functions = require('firebase-functions');
 // Instantiate the Dialogflow client.
 const app = dialogflow({
     debug: true,
-  });
+});
+
+app.intent('Default Welcome Intent', (conv) => {
+  conv.ask(`Hello, I am here to enrich your conversations! What would you like to do? You can play a game, or get a topic for conversation.`);
+});
 
 app.intent('Game', (conv) => {
   conv.ask("Ok, lets play two truths one lie. Haha, kidding! You are going to do most of the work. Each of you should think of three statements out of which one is false.");
@@ -41,11 +45,15 @@ app.intent('Is that the answer', (conv) => {
 });
 
 app.intent('Correct', (conv) => {
-  conv.ask('Do you want to try again?');
+  const audioSound = 'https://actions.google.com/sounds/v1/cartoon/cartoon_cowbell.ogg';
+
+  conv.ask(`<speak><audio src="${audioSound}"></audio> Yey! That was correct! Do you want to try again? </speak>`);
 });
 
 app.intent('Incorrect', (conv) => {
-  conv.ask('Oh no! That was not it! Do you want to play another round?');
+  const audioSound = 'https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg';
+
+  conv.ask(`<speak><audio src="${audioSound}"></audio> Oh no! That was not it! Do you want to play another round? </speak>`);
 });
 
 app.intent('Try again', (conv) => {
