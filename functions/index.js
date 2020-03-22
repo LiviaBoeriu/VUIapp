@@ -159,7 +159,7 @@ conv.close("Ending conversation, thanks for now!");
   // A merged array containing all the questions for the conversation module
   getQuestionPool: function () {
 
-    return question.highIntimacyQuestions.concat(question.highIntimacyQuestions)
+    return question.highIntimacyQuestions.concat(question.lowIntimacyQuestions)
   },
   
   // A function that returns a random question from the merged array called questionPool
