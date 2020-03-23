@@ -13,15 +13,19 @@ const app = dialogflow({
     debug: true,
 });
 
+// Default welcome intent
 app.intent('Default Welcome Intent', (conv) => {
   conv.ask(`Hello, I am here to enrich your conversations! What would you like to do? You can play a game, or get a topic for conversation.`);
 });
 
+
+// Game entry point
 app.intent('Game', (conv) => {
   conv.ask("Ok, lets play two truths one lie. Haha, kidding! You are going to do most of the work. Each of you should think of three statements out of which one is false.");
   conv.ask("After the other person tries to guess, just say correct after they got the right answer. Are you ready to begin?");
 });
 
+// Initial get statements entry point
 app.intent('GetStatements', (conv, params) => {
   conv.user.storage.firstStatement = conv.parameters.first;
   var firstStatement = conv.user.storage.firstStatement;
@@ -35,6 +39,7 @@ app.intent('GetStatements', (conv, params) => {
   conv.ask(`Super, now you have to guess which is the false statement!`);
 });
 
+// Try again round
 app.intent('GetStatements tryagain', (conv, params) => {
   conv.user.storage.firstStatement = conv.parameters.first;
   var firstStatement = conv.user.storage.firstStatement;
@@ -48,47 +53,56 @@ app.intent('GetStatements tryagain', (conv, params) => {
   conv.ask(`Awesome! Right now you have to guess which is the false statement!`);
 });
 
-
+// What is the right answer entry point
 app.intent('The Answer Is', (conv) => {
   conv.followup(`what-do-you-think`);
 });
 
+// Verify if the guess is right
 app.intent('Is that the answer', (conv) => {
   conv.ask('Is that the correct answer?');
 });
 
+// Intent for the correct guess
 app.intent('Correct', (conv) => {
   const audioSound = 'https://actions.google.com/sounds/v1/cartoon/cartoon_cowbell.ogg';
 
   conv.ask(`<speak><audio src="${audioSound}"></audio> Yey! That was correct! Do you want to try again? </speak>`);
 });
 
+// Intent for the incorrect guess
 app.intent('Incorrect', (conv) => {
   const audioSound = 'https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg';
 
   conv.ask(`<speak><audio src="${audioSound}"></audio> Oh no! That was not it! Do you want to play another round? </speak>`);
 });
 
+// Try again funnel from the correct guess
 app.intent('Try again', (conv) => {
   conv.followup(`get-statements`);
 });
 
+// End of game after correct guess
 app.intent('End Game', (conv) => {
   conv.ask('Ok, no problem! Let me know if you want to try the conversation mode by saying: conversation, or if you want to quit.')
 });
 
+// Try again second funnel
 app.intent('Try again scope', (conv) => {
   conv.followup(`tryagain`);
 });
 
+// Try again funnel from the incorrect guess
 app.intent('Incorrect try again', (conv) => {
   conv.followup(`get-statements`);
 });
- 
+
+// End of game after incorrect guess
 app.intent('Incorrect end game', (conv) => {
   conv.ask('Ok, no problem! Let me know if you want to try the conversation mode by saying: conversation, or if you want to quit.')
 });
 
+// Deep linking intent
 app.intent('deepLink', (conv) => {
   conv.ask("Good morning");
 });
