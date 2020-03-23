@@ -3,7 +3,10 @@
 
 // Import the Dialogflow module and response creation dependencies
 // from the Actions on Google client library.
-const {dialogflow} = require('actions-on-google');
+const {
+  dialogflow,
+  Suggestions,
+} = require('actions-on-google');
 
 // Import the firebase-functions package for deployment.
 const functions = require('firebase-functions');
@@ -15,7 +18,11 @@ const app = dialogflow({
 
 // Default welcome intent
 app.intent('Default Welcome Intent', (conv) => {
-  conv.ask(`Hello, I am here to enrich your conversations! What would you like to do? You can play a game, or get a topic for conversation.`);
+  conv.ask(`Hello, I am here to enrich your conversations! What would you like to do? You can play a game, get a topic for conversation or go to the message board`);
+
+  conv.ask(new Suggestions('Game'));
+  conv.ask(new Suggestions('Conversation'));
+  conv.ask(new Suggestions('Message Board'));
 });
 
 /*
@@ -27,6 +34,9 @@ app.intent('Default Welcome Intent', (conv) => {
 app.intent('Game', (conv) => {
   conv.ask("Ok, lets play two truths one lie. Haha, kidding! You are going to do most of the work. Each of you should think of three statements out of which one is false.");
   conv.ask("After the other person tries to guess, just say correct after they got the right answer. Are you ready to begin?");
+
+  conv.ask(new Suggestions('Yes'));
+  conv.ask(new Suggestions('No'));
 });
 
 // Initial get statements entry point
@@ -41,6 +51,10 @@ app.intent('GetStatements', (conv, params) => {
   var thirdStatement = conv.user.storage.thirdStatement;
 
   conv.ask(`Super, now you have to guess which is the false statement!`);
+
+  conv.ask(new Suggestions('I think the false one is the first one'));
+  conv.ask(new Suggestions('I think the false one is the second one'));
+  conv.ask(new Suggestions('I think the false one is the last one'));
 });
 
 // Try again round
@@ -55,6 +69,10 @@ app.intent('GetStatements tryagain', (conv, params) => {
   var thirdStatement = conv.user.storage.thirdStatement;
 
   conv.ask(`Awesome! Right now you have to guess which is the false statement!`);
+  
+  conv.ask(new Suggestions('I think the false one is the first one'));
+  conv.ask(new Suggestions('I think the false one is the second one'));
+  conv.ask(new Suggestions('I think the false one is the last one'));
 });
 
 // What is the right answer entry point
@@ -65,6 +83,9 @@ app.intent('The Answer Is', (conv) => {
 // Verify if the guess is right
 app.intent('Is that the answer', (conv) => {
   conv.ask('Is that the correct answer?');
+
+  conv.ask(new Suggestions('Yes, that is correct!'));
+  conv.ask(new Suggestions('No, that is wrong!'));
 });
 
 // Intent for the correct guess
@@ -72,6 +93,9 @@ app.intent('Correct', (conv) => {
   const audioSound = 'https://actions.google.com/sounds/v1/cartoon/cartoon_cowbell.ogg';
 
   conv.ask(`<speak><audio src="${audioSound}"></audio> Yey! That was correct! Do you want to try again? </speak>`);
+
+  conv.ask(new Suggestions('Yes'));
+  conv.ask(new Suggestions('No'));
 });
 
 // Intent for the incorrect guess
@@ -79,6 +103,9 @@ app.intent('Incorrect', (conv) => {
   const audioSound = 'https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg';
 
   conv.ask(`<speak><audio src="${audioSound}"></audio> Oh no! That was not it! Do you want to play another round? </speak>`);
+  
+  conv.ask(new Suggestions('Yes'));
+  conv.ask(new Suggestions('No'));
 });
 
 // Try again funnel from the correct guess
@@ -88,7 +115,12 @@ app.intent('Try again', (conv) => {
 
 // End of game after correct guess
 app.intent('End Game', (conv) => {
-  conv.ask('Ok, no problem! Let me know if you want to try the conversation mode by saying: conversation, or if you want to quit.')
+  conv.ask('Ok, no problem! Let me know if you want to try the other modes, or if you want to quit.');
+
+  
+  conv.ask(new Suggestions('Conversation'));
+  conv.ask(new Suggestions('Message Board'));
+  conv.ask(new Suggestions('Quit'));
 });
 
 // Try again second funnel
@@ -103,7 +135,11 @@ app.intent('Incorrect try again', (conv) => {
 
 // End of game after incorrect guess
 app.intent('Incorrect end game', (conv) => {
-  conv.ask('Ok, no problem! Let me know if you want to try the conversation mode by saying: conversation, or if you want to quit.')
+  conv.ask('Ok, no problem! Let me know if you want to try the conversation mode by saying: conversation, or if you want to quit.');
+
+  conv.ask(new Suggestions('Conversation'));
+  conv.ask(new Suggestions('Message Board'));
+  conv.ask(new Suggestions('Quit'));
 });
 
 /*
@@ -228,6 +264,39 @@ conv.close("Ending conversation, thanks for now!");
 
 /*
   End of section for the conversation functionality
+*/
+
+/*
+  Start of section for sandbox message module
+*/
+
+app.intent('Sandbox: MessageWelcome', (conv) => {
+  conv.ask(`Welcome to the message sandbox. Here, you can leave messages for the other person, or enter a memory and later remember it!`);
+  conv.ask(`For writing a memory say: enter message, and for relieving a memory say: relieve memory`);
+
+  conv.ask(new Suggestions('Enter message'));
+  conv.ask(new Suggestions('Relieve memory'));
+});
+
+app.intent('Sandbox: WriteMessage', (conv) => {
+  if (conv.user.verification === 'VERIFIED') {
+    conv.user.storage.message = conv.parameters.message;
+    conv.ask(`Your message is ${conv.user.storage.message}`);
+  } else {
+    conv.close(`I can't store you message unfortunately because you are not signed in.`);
+  }
+});
+
+app.intent('Sandbox: Relieve memory', (conv) => {
+  if (conv.user.verification === 'VERIFIED') {
+    conv.ask(`Your message still is ${conv.user.storage.message}`);
+  } else {
+    conv.close(`I can't store you message unfortunately because you are not signed in.`);
+  }
+});
+
+/*
+  End of section for sandbox message module
 */
 
 
