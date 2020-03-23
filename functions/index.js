@@ -18,6 +18,10 @@ app.intent('Default Welcome Intent', (conv) => {
   conv.ask(`Hello, I am here to enrich your conversations! What would you like to do? You can play a game, or get a topic for conversation.`);
 });
 
+/*
+  Start of section for the game functionality
+  Path: Game enter > Get statements > Guess which is the false statement > Reveal if that is the correct choice > Choose whether to play another round or end
+*/
 
 // Game entry point
 app.intent('Game', (conv) => {
@@ -101,6 +105,16 @@ app.intent('Incorrect try again', (conv) => {
 app.intent('Incorrect end game', (conv) => {
   conv.ask('Ok, no problem! Let me know if you want to try the conversation mode by saying: conversation, or if you want to quit.')
 });
+
+/*
+  End of section for the game functionality
+*/
+
+
+/*
+  Start of section for the conversation functionality 
+  Path: Conversation > Get question > Next question/ Repeat question > End Conversation
+*/
 
 // Deep linking intent
 app.intent('deepLink', (conv) => {
@@ -211,6 +225,10 @@ conv.close("Ending conversation, thanks for now!");
   
   }
 };
+
+/*
+  End of section for the conversation functionality
+*/
 
 
 // Set the DialogflowApp object to handle the HTTPS POST request.
