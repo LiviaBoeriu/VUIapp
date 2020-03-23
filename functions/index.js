@@ -35,6 +35,19 @@ app.intent('GetStatements', (conv, params) => {
   conv.ask(`Super, now you have to guess which is the false statement!`);
 });
 
+app.intent('GetStatements tryagain', (conv, params) => {
+  conv.user.storage.firstStatement = conv.parameters.first;
+  var firstStatement = conv.user.storage.firstStatement;
+
+  conv.user.storage.secondStatement = conv.parameters.second;
+  var secondStatement = conv.user.storage.secondStatement;
+
+  conv.user.storage.thirdStatement = conv.parameters.third;
+  var thirdStatement = conv.user.storage.thirdStatement;
+
+  conv.ask(`Awesome! Right now you have to guess which is the false statement!`);
+});
+
 
 app.intent('The Answer Is', (conv) => {
   conv.followup(`what-do-you-think`);
@@ -61,7 +74,7 @@ app.intent('Try again', (conv) => {
 });
 
 app.intent('End Game', (conv) => {
-  conv.ask('Ok, no problem! Let me know if you want to try the conversation mode by sayind: conversation, or if you want to quit.')
+  conv.ask('Ok, no problem! Let me know if you want to try the conversation mode by saying: conversation, or if you want to quit.')
 });
 
 app.intent('Try again scope', (conv) => {
