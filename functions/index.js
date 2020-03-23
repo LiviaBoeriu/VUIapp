@@ -31,7 +31,7 @@ app.intent('Default Welcome Intent', (conv) => {
 */
 
 // Game entry point
-app.intent('Game', (conv) => {
+app.intent('Game: Enter', (conv) => {
   conv.ask("Ok, lets play two truths one lie. Haha, kidding! You are going to do most of the work. Each of you should think of three statements out of which one is false.");
   conv.ask("After the other person tries to guess, just say correct after they got the right answer. Are you ready to begin?");
 
@@ -40,7 +40,7 @@ app.intent('Game', (conv) => {
 });
 
 // Initial get statements entry point
-app.intent('GetStatements', (conv, params) => {
+app.intent('Game: GetStatements', (conv, params) => {
   conv.user.storage.firstStatement = conv.parameters.first;
   var firstStatement = conv.user.storage.firstStatement;
 
@@ -58,7 +58,7 @@ app.intent('GetStatements', (conv, params) => {
 });
 
 // Try again round
-app.intent('GetStatements tryagain', (conv, params) => {
+app.intent('Game: GetStatements TryAgain', (conv, params) => {
   conv.user.storage.firstStatement = conv.parameters.first;
   var firstStatement = conv.user.storage.firstStatement;
 
@@ -76,12 +76,12 @@ app.intent('GetStatements tryagain', (conv, params) => {
 });
 
 // What is the right answer entry point
-app.intent('The Answer Is', (conv) => {
+app.intent('Game: TheAnswerIs', (conv) => {
   conv.followup(`what-do-you-think`);
 });
 
 // Verify if the guess is right
-app.intent('Is that the answer', (conv) => {
+app.intent('Game: IsThatTheAnswer', (conv) => {
   conv.ask('Is that the correct answer?');
 
   conv.ask(new Suggestions('Yes, that is correct!'));
@@ -124,7 +124,7 @@ app.intent('End Game', (conv) => {
 });
 
 // Try again second funnel
-app.intent('Try again scope', (conv) => {
+app.intent('Game: TryAgainScope', (conv) => {
   conv.followup(`tryagain`);
 });
 
