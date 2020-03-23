@@ -95,22 +95,40 @@ app.intent('deepLink', (conv) => {
 
 // The conversation module takes conversation as invocation and returns a response asking the users to say a phase to begin
 // The phase is "Give us a question".
-app.intent('startConversation', (conv) => {
+app.intent('Conversation: Welcome', (conv) => {
   conv.ask("Hi guys, and welcome to self-disclosure conversation! Say: Give us a question, to start and: Next question to continue afterwards. When you are done, just say: end conversation");
 });
 
 // The give us a question module is in the context of the Conversation module and it should give the users a 
 // random low or high intimacy question and then standby for the "Next question" or "end" invocation.
-app.intent('getQuestion', (conv) => {
+app.intent('Conversation: GetQuestion', (conv) => {
   
   // The output command getting a question and asking the users
   // Missing: Wait for the invocation needed to continue. Right now it asked what the users are saying which it should not.
   conv.ask(question.getQuestion());
+  question.updateQuestionPool;
 
 });
 
+// The next question Intent takes the user from the GetQuestion Intent through the next question scope and to the next question
+// where a new queastion is asked.
+app.intent('Conversation: NextQuestion', (conv) => {
+
+  conv.followup(`get-next-question`);
+});
+
+app.intent('Conversation: NextQuestionScope', (conv) => {
+
+  conv.followup(`get-next-question-ask`);
+});
+
+/* app.intent('Conversation: RepeatQuestion', (conv) => {
+
+  conv.ask(lastQuestion);
+}); */
+
 // A method for ending the conversation and return to app welcome intent
-app.intent('cancelConversation', (conv) => {
+app.intent('Conversation: Cancel', (conv) => {
 
 conv.close("Ending conversation, thanks for now!");
 
@@ -195,7 +213,10 @@ conv.close("Ending conversation, thanks for now!");
 
     question.getQuestionPool().splice(question.getQuestion());
   
-  }
+  },
+
+  // lastQuestion: this.getQuestion()
+
 };
 
 
