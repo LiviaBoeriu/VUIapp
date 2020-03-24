@@ -38,7 +38,7 @@ app.intent('Game: Enter', (conv) => {
     When you have done that just say: Ok Google, tell Discloser we are done`);
 });
 
-// Initial get statements entry point
+// Initial get statements entry point [deprecated right now]
 app.intent('Game: GetStatements original', (conv, params) => {
   conv.user.storage.firstStatement = conv.parameters.first;
   var firstStatement = conv.user.storage.firstStatement;
@@ -141,6 +141,7 @@ app.intent('Incorrect end game', (conv) => {
   conv.ask(new Suggestions('Quit'));
 });
 
+// Deep link connection for the game statements
 app.intent('Game DeepLinkStatements', (conv) => {
   conv.followup(`deepLinkFunnel`);
 });
