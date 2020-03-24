@@ -172,7 +172,7 @@ app.intent('Conversation: GetQuestion', (conv) => {
   
   // The output command getting a question and asking the users
   // Missing: Wait for the invocation needed to continue. Right now it asked what the users are saying which it should not.
-  conv.close(question.getQuestion());
+  conv.close(`${question.getQuestion()}`);
   question.updateQuestionPool;
 
 });
@@ -181,18 +181,18 @@ app.intent('Conversation: GetQuestion', (conv) => {
 // where a new queastion is asked.
 app.intent('Conversation DeepLinkNextQuestion', (conv) => {
 
-  conv.followup(`get-next-question`);
+  conv.followup(`getNextQuestion`);
 });
 
-app.intent('Conversation: NextQuestionScope', (conv) => {
+// app.intent('Conversation: NextQuestionScope', (conv) => {
 
-  conv.followup(`get-next-question-ask`);
-});
+//   conv.followup(`get-next-question-ask`);
+// });
 
 // A method for ending the conversation and return to app welcome intent
 app.intent('Conversation: Cancel', (conv) => {
 
-conv.close("Ending conversation, thanks for now!");
+conv.ask("Ending conversation! Would you like to try another module or would you like to quit?");
 
 });
 
