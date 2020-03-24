@@ -32,15 +32,14 @@ app.intent('Default Welcome Intent', (conv) => {
 
 // Game entry point
 app.intent('Game: Enter', (conv) => {
-  conv.ask("Ok, lets play two truths one lie. Haha, kidding! You are going to do most of the work. Each of you should think of three statements out of which one is false.");
-  conv.ask("After the other person tries to guess, just say correct after they got the right answer. Are you ready to begin?");
-
-  conv.ask(new Suggestions('Yes'));
-  conv.ask(new Suggestions('No'));
+  conv.close(`Ok, lets play two truths one lie. 
+    Haha, kidding! You are going to do most of the work. 
+    One of you should begin thinking of three statements out of which one is false. 
+    When you have done that just say: Ok Google, tell Discloser we are done`);
 });
 
 // Initial get statements entry point
-app.intent('Game: GetStatements', (conv, params) => {
+app.intent('Game: GetStatements original', (conv, params) => {
   conv.user.storage.firstStatement = conv.parameters.first;
   var firstStatement = conv.user.storage.firstStatement;
 
@@ -52,9 +51,9 @@ app.intent('Game: GetStatements', (conv, params) => {
 
   conv.ask(`Super, now you have to guess which is the false statement!`);
 
-  conv.ask(new Suggestions('I think the false one is the first one'));
-  conv.ask(new Suggestions('I think the false one is the second one'));
-  conv.ask(new Suggestions('I think the false one is the last one'));
+  conv.ask(new Suggestions('I think the false one is'));
+  conv.ask(new Suggestions('I think the false one is'));
+  conv.ask(new Suggestions('I think the false one is'));
 });
 
 // Try again round
@@ -68,11 +67,11 @@ app.intent('Game: GetStatements TryAgain', (conv, params) => {
   conv.user.storage.thirdStatement = conv.parameters.third;
   var thirdStatement = conv.user.storage.thirdStatement;
 
-  conv.ask(`Awesome! Right now you have to guess which is the false statement!`);
+  conv.ask(`Awesome! Now you have to guess which is the false statement!`);
   
-  conv.ask(new Suggestions('I think the false one is the first one'));
-  conv.ask(new Suggestions('I think the false one is the second one'));
-  conv.ask(new Suggestions('I think the false one is the last one'));
+  conv.ask(new Suggestions('The first one'));
+  conv.ask(new Suggestions('The second one'));
+  conv.ask(new Suggestions('The third one'));
 });
 
 // What is the right answer entry point
@@ -82,7 +81,7 @@ app.intent('Game: TheAnswerIs', (conv) => {
 
 // Verify if the guess is right
 app.intent('Game: IsThatTheAnswer', (conv) => {
-  conv.ask('Is that the correct answer?');
+  conv.ask('Was that the correct guess?');
 
   conv.ask(new Suggestions('Yes, that is correct!'));
   conv.ask(new Suggestions('No, that is wrong!'));
@@ -109,12 +108,12 @@ app.intent('Incorrect', (conv) => {
 });
 
 // Try again funnel from the correct guess
-app.intent('Try again', (conv) => {
+app.intent('Correct try again', (conv) => {
   conv.followup(`get-statements`);
 });
 
 // End of game after correct guess
-app.intent('End Game', (conv) => {
+app.intent('Correct end game', (conv) => {
   conv.ask('Ok, no problem! Let me know if you want to try the other modes, or if you want to quit.');
 
   
@@ -125,7 +124,7 @@ app.intent('End Game', (conv) => {
 
 // Try again second funnel
 app.intent('Game: TryAgainScope', (conv) => {
-  conv.followup(`tryagain`);
+  conv.close(`Ok, that's awesome. I will give you some time to think of the three statements. When you are done just say: Ok Google, tell Discloser we are done!`);
 });
 
 // Try again funnel from the incorrect guess
@@ -140,6 +139,10 @@ app.intent('Incorrect end game', (conv) => {
   conv.ask(new Suggestions('Conversation'));
   conv.ask(new Suggestions('Message Board'));
   conv.ask(new Suggestions('Quit'));
+});
+
+app.intent('Game DeepLinkStatements', (conv) => {
+  conv.followup(`deepLinkFunnel`);
 });
 
 /*
