@@ -38,23 +38,23 @@ app.intent('Game: Enter', (conv) => {
     When you have done that just say: Ok Google, tell Discloser we are done`);
 });
 
-// Initial get statements entry point [deprecated right now]
-app.intent('Game: GetStatements original', (conv, params) => {
-  conv.user.storage.firstStatement = conv.parameters.first;
-  var firstStatement = conv.user.storage.firstStatement;
+// // Initial get statements entry point [deprecated right now]
+// app.intent('Game: GetStatements original', (conv, params) => {
+//   conv.user.storage.firstStatement = conv.parameters.first;
+//   var firstStatement = conv.user.storage.firstStatement;
 
-  conv.user.storage.secondStatement = conv.parameters.second;
-  var secondStatement = conv.user.storage.secondStatement;
+//   conv.user.storage.secondStatement = conv.parameters.second;
+//   var secondStatement = conv.user.storage.secondStatement;
 
-  conv.user.storage.thirdStatement = conv.parameters.third;
-  var thirdStatement = conv.user.storage.thirdStatement;
+//   conv.user.storage.thirdStatement = conv.parameters.third;
+//   var thirdStatement = conv.user.storage.thirdStatement;
 
-  conv.ask(`Super, now you have to guess which is the false statement!`);
+//   conv.ask(`Super, now you have to guess which is the false statement!`);
 
-  conv.ask(new Suggestions('I think the false one is'));
-  conv.ask(new Suggestions('I think the false one is'));
-  conv.ask(new Suggestions('I think the false one is'));
-});
+//   conv.ask(new Suggestions('I think the false one is'));
+//   conv.ask(new Suggestions('I think the false one is'));
+//   conv.ask(new Suggestions('I think the false one is'));
+// });
 
 // Try again round
 app.intent('Game: GetStatements TryAgain', (conv, params) => {
@@ -178,11 +178,6 @@ app.intent('Conversation DeepLinkNextQuestion', (conv) => {
 
   conv.followup(`getNextQuestion`);
 });
-
-// app.intent('Conversation: NextQuestionScope', (conv) => {
-
-//   conv.followup(`get-next-question-ask`);
-// });
 
 // A method for ending the conversation and return to app welcome intent
 app.intent('Conversation: Cancel', (conv) => {
