@@ -187,7 +187,7 @@ app.intent('Conversation DeepLinkNextQuestion', (conv) => {
 // A method for ending the conversation and return to app welcome intent
 app.intent('Conversation: Cancel', (conv) => {
 
-conv.ask("Ending conversation! Would you like to try another module or would you like to quit?");
+  conv.ask("Ending conversation! Would you like to try another module or would you like to quit?");
 
 });
 
