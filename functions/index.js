@@ -314,7 +314,7 @@ app.intent('Sandbox: WriteMessage', (conv) => {
 
 app.intent('Sandbox: Relieve memory', (conv) => {
   if (conv.user.verification === 'VERIFIED') {
-    conv.ask(`Your message still is ${conv.user.storage.message}`);
+    conv.ask(`Your last memory is ${conv.user.storage.message}`);
   } else {
     conv.close(`I can't store you message unfortunately because you are not signed in.`);
   }
