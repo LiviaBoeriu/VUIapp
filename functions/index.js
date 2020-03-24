@@ -156,11 +156,6 @@ app.intent('Game DeepLinkStatements', (conv) => {
   Path: Conversation > Get question > Next question/ Repeat question > End Conversation
 */
 
-// Deep linking intent
-app.intent('deepLink', (conv) => {
-  conv.ask("Good morning");
-});
-
 // The conversation module takes conversation as invocation and returns a response asking the users to say a phase to begin
 // The phase is "Give us a question".
 app.intent('Conversation: Welcome', (conv) => {
@@ -174,8 +169,7 @@ app.intent('Conversation: GetQuestion', (conv) => {
   // The output command getting a question and asking the users
   // Missing: Wait for the invocation needed to continue. Right now it asked what the users are saying which it should not.
   conv.close(`${question.getQuestion()}`);
-  question.updateQuestionPool;
-
+  question.updateQuestionPool();
 });
 
 // The next question Intent takes the user from the GetQuestion Intent through the next question scope and to the next question
