@@ -241,7 +241,7 @@ app.intent('Conversation: Cancel', (conv) => {
     "Story time! Tell a story about a place you have travelled to that made an unforgettable impression on you.",
     "Debate time! What is more enjoyable: Big Party or Small Gathering?",
     "What do you guys think about the news this past week?",
-    "Sory time! Tell a story about about a proud moment you have had in you educational life or work life.",
+    "Story time! Tell a story about about a proud moment you have had in you educational life or work life.",
     "Would you like to be famous? In what way?",
     "Before making a telephone call, do you ever rehearse what you are going to say? Why?",
     "What would constitute a “perfect” day for you?",
