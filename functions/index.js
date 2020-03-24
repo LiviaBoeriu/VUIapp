@@ -8,6 +8,22 @@ const {
   Suggestions,
 } = require('actions-on-google');
 
+var firebase = require("firebase/app");
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBURijNeg7YlU5mJjHSW-u4TfxGZet4CcE",
+  authDomain: "discloser-41cea.firebaseapp.com",
+  databaseURL: "https://discloser-41cea.firebaseio.com",
+  projectId: "discloser-41cea",
+  storageBucket: "discloser-41cea.appspot.com",
+  messagingSenderId: "856112694993",
+  appId: "1:856112694993:web:36f51e08a709605e1b67f0",
+  measurementId: "G-4WRK6LK9PG"
+};
+
+firebase.initializeApp(firebaseConfig);
+
 // Import the firebase-functions package for deployment.
 const functions = require('firebase-functions');
 
@@ -91,7 +107,7 @@ app.intent('Game: IsThatTheAnswer', (conv) => {
 app.intent('Correct', (conv) => {
   const audioSound = 'https://actions.google.com/sounds/v1/cartoon/cartoon_cowbell.ogg';
 
-  conv.ask(`<speak><audio src="${audioSound}"></audio> Yey! That was correct! Do you want to try again? </speak>`);
+  conv.ask(`<speak><audio src="${audioSound}"></audio> That was correct! Do you want to try again? </speak>`);
 
   conv.ask(new Suggestions('Yes'));
   conv.ask(new Suggestions('No'));
@@ -290,7 +306,7 @@ app.intent('Sandbox: MessageWelcome', (conv) => {
 app.intent('Sandbox: WriteMessage', (conv) => {
   if (conv.user.verification === 'VERIFIED') {
     conv.user.storage.message = conv.parameters.message;
-    conv.ask(`Your message is ${conv.user.storage.message}`);
+    conv.ask(`Your message is ${conv.user.storage.message}. If you want to hear this message again at some point in the future just say: relieve memory. What would you like to do now? You can play a game, get a topic for conversation o quit`);
   } else {
     conv.close(`I can't store you message unfortunately because you are not signed in.`);
   }
