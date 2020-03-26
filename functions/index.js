@@ -9,27 +9,38 @@ const {
   Suggestions,
 } = require('actions-on-google');
 
-// new addition
-const admin = require('firebase-admin');
-
 var firebase = require("firebase/app");
 
+var admin = require("firebase-admin");
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBURijNeg7YlU5mJjHSW-u4TfxGZet4CcE",
-  authDomain: "discloser-41cea.firebaseapp.com",
+// Fetch the service account key JSON file contents
+var serviceAccount = require("./service-account.json");
+
+// Initialize the app with a service account, granting admin privileges
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://discloser-41cea.firebaseio.com",
-  projectId: "discloser-41cea",
-  storageBucket: "discloser-41cea.appspot.com",
-  messagingSenderId: "856112694993",
-  appId: "1:856112694993:web:36f51e08a709605e1b67f0",
-  measurementId: "G-4WRK6LK9PG"
-};
+  databaseAuthVariableOverride: {
+    uid: "my-service-worker"
+  }
+});
 
-firebase.initializeApp(firebaseConfig);
-
+// As an admin, the app has access to read and write all data, regardless of Security Rules
 const auth = admin.auth();
 const db = admin.firestore();
+
+// const firebaseConfig = {
+//   apiKey: "AIzaSyBURijNeg7YlU5mJjHSW-u4TfxGZet4CcE",
+//   authDomain: "discloser-41cea.firebaseapp.com",
+//   databaseURL: "https://discloser-41cea.firebaseio.com",
+//   projectId: "discloser-41cea",
+//   storageBucket: "discloser-41cea.appspot.com",
+//   messagingSenderId: "856112694993",
+//   appId: "1:856112694993:web:36f51e08a709605e1b67f0",
+//   measurementId: "G-4WRK6LK9PG"
+// };
+
+firebase.initializeApp();
 
 
 // Import the firebase-functions package for deployment.
@@ -54,7 +65,7 @@ app.intent('Start Signin', (conv) => {
 app.intent('Get Signin', (conv, params, signin) => {
   if (signin.status === 'OK') {
     const payload = conv.user.profile.payload;
-    conv.followup(`I have your data! ${payload}`);
+    conv.ask(`I have your data! ${payload.family_name}`);
   } else {
     conv.ask(`I won't be able to save your data, but what do you want to do next?`);
   }
