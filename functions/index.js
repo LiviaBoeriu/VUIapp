@@ -5,8 +5,12 @@
 // from the Actions on Google client library.
 const {
   dialogflow,
+  SignIn,
   Suggestions,
 } = require('actions-on-google');
+
+// new addition
+const admin = require('firebase-admin');
 
 var firebase = require("firebase/app");
 
@@ -24,17 +28,42 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+const auth = admin.auth();
+const db = admin.firestore();
+
+
 // Import the firebase-functions package for deployment.
 const functions = require('firebase-functions');
 
 // Instantiate the Dialogflow client.
 const app = dialogflow({
     debug: true,
+    clientId: '856112694993-r4l2v1ormrhf87mfont5fr3r41vvdoji.apps.googleusercontent.com',
 });
 
+
+app.intent('Sign In', (conv) => {
+  conv.followup(`startSignIn`);
+});
+
+// Intent that starts the account linking flow.
+app.intent('Start Signin', (conv) => {
+  conv.ask(new SignIn('To get your account details'));
+});
+// Create a Dialogflow intent with the `actions_intent_SIGN_IN` event.
+app.intent('Get Signin', (conv, params, signin) => {
+  if (signin.status === 'OK') {
+    const payload = conv.user.profile.payload;
+    conv.followup(`I have your data! ${payload}`);
+  } else {
+    conv.ask(`I won't be able to save your data, but what do you want to do next?`);
+  }
+});
+
+
 // Default welcome intent
-app.intent('Default Welcome Intent', (conv) => {
-  conv.ask(`Hello, I am here to enrich your conversations! What would you like to do? You can play a game, get a topic for conversation or go to the message board`);
+app.intent('Default Welcome Intent', (conv, signin) => {
+  conv.ask(`Hello, I am here to enrich your conversations! What would you like to do? You can play a game, have a conversation or go to the message board or sign in`);
 
   conv.ask(new Suggestions('Game'));
   conv.ask(new Suggestions('Conversation'));
@@ -320,6 +349,7 @@ app.intent('Sandbox: MessageWelcome', (conv) => {
 });
 
 app.intent('Sandbox: WriteMessage', (conv) => {
+  const {payload} = conv.user.profile;
   if (conv.user.verification === 'VERIFIED') {
     conv.user.storage.message = conv.parameters.message;
     conv.ask(`Your message is ${conv.user.storage.message}. If you want to hear this message again at some point in the future just say: relieve memory. What would you like to do now? You can play a game, get a topic for conversation o quit`);
