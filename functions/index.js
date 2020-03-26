@@ -9,47 +9,37 @@ const {
   Suggestions,
 } = require('actions-on-google');
 
+
 var firebase = require("firebase/app");
-
-var admin = require("firebase-admin");
-
-// Fetch the service account key JSON file contents
-var serviceAccount = require("./service-account.json");
-
-// Initialize the app with a service account, granting admin privileges
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://discloser-41cea.firebaseio.com",
-  databaseAuthVariableOverride: {
-    uid: "my-service-worker"
-  }
-});
-
-// As an admin, the app has access to read and write all data, regardless of Security Rules
-const auth = admin.auth();
-const db = admin.firestore();
-
-// const firebaseConfig = {
-//   apiKey: "AIzaSyBURijNeg7YlU5mJjHSW-u4TfxGZet4CcE",
-//   authDomain: "discloser-41cea.firebaseapp.com",
-//   databaseURL: "https://discloser-41cea.firebaseio.com",
-//   projectId: "discloser-41cea",
-//   storageBucket: "discloser-41cea.appspot.com",
-//   messagingSenderId: "856112694993",
-//   appId: "1:856112694993:web:36f51e08a709605e1b67f0",
-//   measurementId: "G-4WRK6LK9PG"
-// };
 
 firebase.initializeApp();
 
-
-// Import the firebase-functions package for deployment.
+const admin = require('firebase-admin');
 const functions = require('firebase-functions');
+
+admin.initializeApp(functions.config().firebase);
+
+let db = admin.firestore();
+
+// // Import the firebase-functions package for deployment.
+// const functions = require('firebase-functions');
 
 // Instantiate the Dialogflow client.
 const app = dialogflow({
-    debug: true,
-    clientId: '856112694993-r4l2v1ormrhf87mfont5fr3r41vvdoji.apps.googleusercontent.com',
+  debug: true,
+  clientId: '856112694993-r4l2v1ormrhf87mfont5fr3r41vvdoji.apps.googleusercontent.com',
+});
+
+
+app.intent('TestDB', (conv) => {
+  let docRef = db.collection('user').doc('alovelace');
+
+  let setNewUser = docRef.set({
+    first: 'Ada',
+    last: 'Lovelace',
+    born: 1815
+  });
+  conv.close('I have writen data');
 });
 
 
@@ -124,7 +114,7 @@ app.intent('Game: GetStatements TryAgain', (conv, params) => {
   var thirdStatement = conv.user.storage.thirdStatement;
 
   conv.ask(`Awesome! Now you have to guess which is the false statement!`);
-  
+
   conv.ask(new Suggestions('The first one'));
   conv.ask(new Suggestions('The second one'));
   conv.ask(new Suggestions('The third one'));
@@ -158,7 +148,7 @@ app.intent('Incorrect', (conv) => {
   const audioSound = 'https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg';
 
   conv.ask(`<speak><audio src="${audioSound}"></audio> Oh no! That was not it! Do you want to play another round? </speak>`);
-  
+
   conv.ask(new Suggestions('Yes'));
   conv.ask(new Suggestions('No'));
 });
@@ -172,7 +162,7 @@ app.intent('Correct try again', (conv) => {
 app.intent('Correct end game', (conv) => {
   conv.ask('Ok, no problem! Let me know if you want to try the other modes, or if you want to quit.');
 
-  
+
   conv.ask(new Suggestions('Conversation'));
   conv.ask(new Suggestions('Message Board'));
   conv.ask(new Suggestions('Quit'));
@@ -221,12 +211,12 @@ app.intent('Conversation: Welcome', (conv) => {
 // The give us a question module is in the context of the Conversation module and it should give the users a 
 // random low or high intimacy question and then standby for the "Next question" or "end" invocation.
 app.intent('Conversation: GetQuestion', (conv) => {
-  
+
   // The output command getting a question and asking the users
   // Missing: Wait for the invocation needed to continue. Right now it asked what the users are saying which it should not.
   conv.user.storage.returnedQuestion = question.getQuestion();
   var returnedQuestion = conv.user.storage.returnedQuestion;
-  
+
   conv.close(`${conv.user.storage.returnedQuestion}`);
   question.updateQuestionPool();
 });
@@ -261,8 +251,8 @@ app.intent('Conversation: RepeatQuestion', (conv) => {
 // The question object contains arrays of high and low intimacy questions. It stores them in a question pool.
 // It includes the function getQuestion that returns a random question from the pool.
 // Afterwards it updates the question pool so it does not ask the same question twice.
-  var question = {
-  
+var question = {
+
   // An array containing the pool of high intimacy questions
   highIntimacyQuestions: [
     "What is something your partner did today that made you happy?",
@@ -324,7 +314,7 @@ app.intent('Conversation: RepeatQuestion', (conv) => {
 
     return question.highIntimacyQuestions.concat(question.lowIntimacyQuestions)
   },
-  
+
   // A function that returns a random question from the merged array called questionPool
   getQuestion: function () {
 
@@ -336,7 +326,7 @@ app.intent('Conversation: RepeatQuestion', (conv) => {
   updateQuestionPool: function () {
 
     question.getQuestionPool().splice(question.getQuestion());
-  
+
   },
 
   // lastQuestion: this.getQuestion()
@@ -360,7 +350,7 @@ app.intent('Sandbox: MessageWelcome', (conv) => {
 });
 
 app.intent('Sandbox: WriteMessage', (conv) => {
-  const {payload} = conv.user.profile;
+  const { payload } = conv.user.profile;
   if (conv.user.verification === 'VERIFIED') {
     conv.user.storage.message = conv.parameters.message;
     conv.ask(`Your message is ${conv.user.storage.message}. If you want to hear this message again at some point in the future just say: relieve memory. What would you like to do now? You can play a game, get a topic for conversation o quit`);
